@@ -1,0 +1,119 @@
+// Main function
+function main():
+    initialize random number generator
+    create Gameplay object
+    call Gameplay.play()
+
+// Gameplay class
+class Gameplay:
+    function play():
+        do:
+            create Player user
+            create Player dealer
+            create Deck object deckObj
+            create stack of cards deck by calling deckObj.createDeck()
+            
+            // Create card values map
+            cardValues = {
+                "2": 2, "3": 3, ..., "10": 10, "Jack": 10, "Queen": 10, "King": 10, "Ace": 11
+            }
+
+            // Initial card dealing
+            dealCard(deck, user.hand)
+            dealCard(deck, dealer.hand)
+            dealCard(deck, user.hand)
+            dealCard(deck, dealer.hand)
+
+            // Show hands
+            print user.hand (show all)
+            print dealer.hand (hide the first card)
+
+            // Player's turn
+            userBusted = false
+            do:
+                ask player "Hit or Stand?"
+                if player chooses "Hit":
+                    dealCard(deck, user.hand)
+                    print the card drawn
+                    print user's updated hand
+                    if user.hand value > 21:
+                        userBusted = true
+                        print "You busted"
+                        break
+            while player chooses "Hit" and user.hand size < 5
+
+            if not userBusted:
+                // Dealer's turn
+                reveal dealer's hand
+                dealerTotal = dealer.calculateHandValue(cardValues)
+                
+                while dealerTotal < 17:
+                    dealCard(deck, dealer.hand)
+                    dealerTotal = dealer.calculateHandValue(cardValues)
+                
+                // Show dealer's final hand
+                print dealer.hand
+                print dealer's total value
+
+                // Determine winner
+                userTotal = user.calculateHandValue(cardValues)
+                if dealerTotal > 21:
+                    print "Dealer busted! You win!"
+                else if userTotal > dealerTotal:
+                    print "You win!"
+                else if userTotal < dealerTotal:
+                    print "Dealer wins."
+                else:
+                    print "It's a tie."
+
+            ask if player wants to play again (y/n)
+        while player chooses 'y'
+
+// Player class
+class Player:
+    function showHand(hideFirstCard, hiddenCardCount):
+        if hideFirstCard:
+            print "Hidden Card"
+        for each card in hand:
+            print card
+    
+    function calculateHandValue(cardValues):
+        totalValue = 0
+        aceCount = countAces()
+        for each card in hand:
+            totalValue += cardValues[card.value]
+        while totalValue > 21 and aceCount > 0:
+            totalValue -= 10
+            aceCount -= 1
+        return totalValue
+
+    function countAces():
+        count = 0
+        for each card in hand:
+            if card.value == "Ace":
+                count += 1
+        return count
+
+// Deck class
+class Deck:
+    function createDeck():
+        suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
+        values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
+        deckList = empty list of Cards
+
+        for each suit in suits:
+            for each value in values:
+                card = create Card with suit and value
+                if card not in dealtCards:
+                    add card to deckList
+
+        shuffle deckList
+        convert deckList to stack and return it
+
+// Card class
+class Card:
+    suit: string
+    value: string
+
+    function displayCard():
+        print formatted card as value + suit abbreviation
